@@ -38,7 +38,17 @@ function newton(f::Function, vals::Array{Float,1}, it=50)
     newton(f, vals, it-1)
 end
 
+f(x) = x^4-x^3-8x^2
+a = copy(newton(f, [2.], 10))
+b = [a f.(a)]
 
-newton(x -> x^4-x^3-8x^2, [2.])[end]
+xlim = [minimum(b[1:end,1]) - .1 * minimum(b[1:end,1]), maximum(b[1:end,1]) + .1 * maximum(b[1:end,1])]
 
-newton(x -> x^5-6x^3-2x^2,[1])
+gr()
+p = plot(xlim[1]:.05:xlim[2], f.(xlim[1]:.05:xlim[2]))
+for i in 1:size(b)[1]-1
+    plot!(b[i:i+1], b[i:i+1, 2], linestyle=:dot, label=false)
+    scatter!(b[i:i+1], b[i:i+1, 2], label=false)
+end
+plot(p)
+
