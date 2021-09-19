@@ -1,4 +1,4 @@
-using Plots, Roots, ForwardDiff, LaTeXStrings
+using Plots, Roots, ForwardDiff, LaTeXStrings, Calculus
 
 f(x) = 2x^4 - 5x^3 - x^2
 
@@ -20,3 +20,25 @@ plot!([α[3]], [f(α[3])], seriestype=:scatter)
 
 plot(p1, p2, p3, p4, layout=(2,2), legend=false, size=(850, 650), plot_title=L"2x^4-5x^3-x^2")
 
+q(x,y) = (y - x^2)^2 - x^2
+
+plotlyjs()
+
+a = -.6:.005:.6
+b = -.6:.005:.6
+
+contour(a, b, q)
+
+function newton(f::Function, init::Real, vals::Array{Float,Float}, it=50)
+    xn = init - 1 / ForwardDiff.derivative(x -> ForwardDiff.derivative(f, x), init) *
+        ForwardDiff.derivative(f, init)
+    if it == 0
+        return xn
+    end
+    newton(f, xn, it-1)
+end
+
+
+newton(x -> x^4-x^3-8x^2, 2)
+
+newton(x -> x^5-6x^3-2x^2,1)
