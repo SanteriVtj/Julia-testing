@@ -29,16 +29,16 @@ b = -.6:.005:.6
 
 contour(a, b, q)
 
-function newton(f::Function, init::Real, vals::Array{Float,Float}, it=50)
-    xn = init - 1 / ForwardDiff.derivative(x -> ForwardDiff.derivative(f, x), init) *
-        ForwardDiff.derivative(f, init)
+function newton(f::Function, vals::Array{Float,1}, it=50)
+    append!(vals, vals[end] - 1 / ForwardDiff.derivative(x -> ForwardDiff.derivative(f, x), vals[end]) *
+        ForwardDiff.derivative(f, vals[end]))
     if it == 0
-        return xn
+        return vals
     end
-    newton(f, xn, it-1)
+    newton(f, vals, it-1)
 end
 
 
-newton(x -> x^4-x^3-8x^2, 2)
+newton(x -> x^4-x^3-8x^2, [2.])[end]
 
-newton(x -> x^5-6x^3-2x^2,1)
+newton(x -> x^5-6x^3-2x^2,[1])
